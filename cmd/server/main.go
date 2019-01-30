@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 
+	"github.com/digitalocean/godo"
 	"github.com/ochirovch/CollyRoutines/server"
 )
 
@@ -13,19 +15,27 @@ var Keeper server.Keeper
 // Dashboard show info about vps and statistics for calculations
 func Dashboard(w http.ResponseWriter, r *http.Request) {
 
+	Droplets := []godo.Droplet{}
+	t := template.New("index.html")           // Create a template.
+	t, err := t.ParseFiles("html/index.html") // Parse template file.
+	if err != nil {
+		log.Println(err)
+	}
 	for _, vps := range Keeper.VPS {
 		switch x := vps.(type) {
 		case *server.VPSDigitalOcean:
-
-			for _, droplet := range x.Droplets {
-				fmt.Fprintf(w, "Droplet names: %s\n", droplet.Name)
-
-			}
+			Droplets = x.Droplets
 		case *server.VPSGoogleComputeEngine:
 		default:
 			fmt.Printf("Unsupported type: %T\n", x)
 		}
 	}
+
+	err = t.Execute(w, Droplets) // merge.
+	if err != nil {
+		log.Println(err)
+	}
+
 }
 
 func AddNode(w http.ResponseWriter, r *http.Request) {

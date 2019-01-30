@@ -73,6 +73,10 @@ func (v *VPSGoogleComputeEngine) Launch(VPSsettings) {
 
 }
 
+// Launch use for launching one or few examples of vps
+// Count of names is count of instance
+// by default use most low cost instance
+//
 func (v *VPSDigitalOcean) Launch(setting VPSsettings) {
 	tokenSource := &TokenSource{
 		AccessToken: setting.Token,
