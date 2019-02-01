@@ -65,8 +65,8 @@ const (
 	GoogleComputeEngine = "GoogleComputeEngine"
 	DigitalOcean        = "DigitalOcean"
 	//not safe without secure connection
-	SourceCodePayload = "sudo snap install --classic --channel=1.11/stable go \n wget hostdownload \n go run main.go"
-	BinaryPayload     = "wget hostdownload \n ./colly"
+	SourceCodePayload = "/payloads/SourceCode"
+	BinaryPayload     = "/payloads/Binary"
 )
 
 func (v *VPSGoogleComputeEngine) Launch(VPSsettings) {
@@ -117,7 +117,7 @@ func (v *VPSDigitalOcean) Launch(setting VPSsettings) {
 func (k *Keeper) Launch(settings ...VPSsettings) {
 	for _, setting := range settings {
 		if setting.Token == "" {
-			log.Println("Do not set up Token for ", setting.Cloud)
+			log.Println("set up Token for ", setting.Cloud)
 			continue
 		}
 
@@ -146,7 +146,7 @@ func LoadKeeper(path string) (k Keeper, err error) {
 	configuration := configuration{}
 	err = decoder.Decode(&configuration)
 	if err != nil {
-		log.Println("error!!!:", err)
+		log.Println("error decoding json:", err)
 	}
 	k.Name = configuration.Name
 	k.Tokens = make(map[string]string)

