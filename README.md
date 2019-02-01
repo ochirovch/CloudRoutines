@@ -3,11 +3,14 @@ CollyRoutines runs multiple vps and executes a colly application on each one whi
 
 ## Cloud support
 Firstly, it implements DigitalOcean droplets 5 usd/month
+
 Secondly, Google Compute Engine 2,5 usd/month (preemptible)
 
 ## Quick launch
 rename _settings.json to settings.json and paste your DigitalOcean token
+
 go run cmd/server/main.go
+
 visit http:/localhost:8099/
 
 ## TODO

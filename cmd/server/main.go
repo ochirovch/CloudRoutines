@@ -41,9 +41,9 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 func AddNode(w http.ResponseWriter, r *http.Request) {
 
 	Keeper.Launch(
-		server.VPSsettings{Cloud: server.GoogleComputeEngine, Type: "mid-1", Payload: server.SourceCodePayload},
-		server.VPSsettings{Cloud: server.DigitalOcean, Type: "mid-2", Payload: server.BinaryPayload},
+		server.VPSsettings{Names: []string{"colly"}, Cloud: server.DigitalOcean, Payload: server.BinaryPayload},
 	)
+	fmt.Fprintf(w, "asdf")
 }
 
 func DeleteNode(w http.ResponseWriter, r *http.Request) {

@@ -109,17 +109,21 @@ func (v *VPSDigitalOcean) Launch(setting VPSsettings) {
 
 	droplets, _, err := client.Droplets.CreateMultiple(ctx, createRequest)
 	if err != nil {
+		fmt.Println(err)
+		fmt.Printf("%+v\n", setting)
 		return
 	}
 	v.Droplets = droplets
+	fmt.Printf("%+v\n", v.Droplets)
 }
 
 func (k *Keeper) Launch(settings ...VPSsettings) {
 	for _, setting := range settings {
-		if setting.Token == "" {
+		if k.Tokens[setting.Cloud] == "" {
 			log.Println("set up Token for ", setting.Cloud)
 			continue
 		}
+		setting.Token = k.Tokens[setting.Cloud]
 
 		switch setting.Cloud {
 		case GoogleComputeEngine:
