@@ -16,7 +16,7 @@ type Bucket struct {
 
 // GetListURLs get list addresses and visit their
 func GetListURLs(address string) (bucket Bucket, err error) {
-	resp, err := http.Get(address + "/getbucket")
+	resp, err := http.Get(address + "/channel/send")
 	if err != nil {
 		return bucket, err
 	}

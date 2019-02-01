@@ -16,7 +16,7 @@ visit http:/localhost:8099/
 ## TODO
 - [X] add bootstrap
 
-- [ ] implements adding vps from dashboard
+- [X] implements adding vps from dashboard
 
 - [ ] add payload handler
 

@@ -62,6 +62,18 @@ func BinaryCodePayload(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//ChannelReceive - get results from vm
+// vm, bundle, status
+func ChannelReceive(w http.ResponseWriter, r *http.Request) {
+
+}
+
+//ChannelSend - send tasks
+// vm, bundle, status
+func ChannelSend(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func main() {
 	var err error
 	Keeper, err = server.LoadKeeper("settings.json")
@@ -75,6 +87,8 @@ func main() {
 	http.HandleFunc("/payload/sourcecode", SourceCodePayload)
 	http.HandleFunc("/payload/binarycode", BinaryCodePayload)
 	http.HandleFunc("/payload/download", Download)
+	http.HandleFunc("/channel/receive", ChannelReceive)
+	http.HandleFunc("/channel/send", ChannelSend)
 
 	http.ListenAndServe(":8099", nil)
 
