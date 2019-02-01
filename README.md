@@ -11,7 +11,10 @@ go run cmd/server/main.go
 visit http:/localhost:8099/
 
 ## TODO
--[X] add bootstrap
--[ ] implements adding vps from dashboard
--[ ] add payload handler
--[ ] add processing results handler
+- [X] add bootstrap
+
+- [ ] implements adding vps from dashboard
+
+- [ ] add payload handler
+
+- [ ] add processing results handler
