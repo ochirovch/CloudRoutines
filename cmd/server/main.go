@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -40,10 +41,16 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 
 func AddNode(w http.ResponseWriter, r *http.Request) {
 
-	Keeper.Launch(
-		server.VPSsettings{Names: []string{"colly"}, Cloud: server.DigitalOcean, Payload: server.BinaryPayload},
+	instances := Keeper.Launch(
+		server.VPSsettings{ProjectName: "colly", Cloud: server.DigitalOcean, Payload: server.BinaryPayload},
 	)
-	fmt.Fprintf(w, "asdf")
+	jsonInstances, err := json.Marshal(instances)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonInstances)
 }
 
 func DeleteNode(w http.ResponseWriter, r *http.Request) {

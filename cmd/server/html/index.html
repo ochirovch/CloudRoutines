@@ -33,15 +33,18 @@
             $.ajax({
             url:"node/add",
             type:"POST",
+            dataType: "json",
             data:{
-              projectName: "serverRoutines",
+              projectName: "ClouRoutines",
             },
-            success:function(response) {
-              var ul = document.getElementById("vps-list");
-              var li = document.createElement("li");
-              li.className = "list-group-item"
-              li.appendChild(document.createTextNode(response.Text));
-              ul.appendChild(li);
+            success:function(data) {
+                $.each(data, function(index, element) {
+                    var ul = document.getElementById("vps-list");
+                    var li = document.createElement("li");
+                    li.className = "list-group-item"
+                    li.appendChild(document.createTextNode(element.Name));
+                    ul.appendChild(li);
+                });
            },
            error:function(){
             alert("error");
