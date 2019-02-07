@@ -1,5 +1,5 @@
-# CollyRoutines
-CollyRoutines runs multiple vps and executes a colly application on each one which receive tasks on the server.
+# CloudRoutines
+CloudRoutines runs multiple vps and executes a colly application on each one which receive tasks on the server.
 
 ## Cloud support
 Firstly, it implements DigitalOcean droplets 5 usd/month
