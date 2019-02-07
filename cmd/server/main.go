@@ -50,6 +50,7 @@ func AddNode(w http.ResponseWriter, r *http.Request) {
 	}
 	payload := fmt.Sprintf(string(BinaryPayloadText), Keeper.IPserver, Keeper.Name, Keeper.Name, Keeper.Name)
 
+	log.Println(payload)
 	instances := Keeper.Launch(
 		server.VPSsettings{ProjectName: Keeper.Name, Cloud: server.DigitalOcean, Payload: payload},
 	)
@@ -116,6 +117,7 @@ func main() {
 		return
 	}
 	go refreshdata(Keeper)
+	//	http.Handle("/payload/binary", http.FileServer(http.Dir("html/payloads/binary")))
 	http.HandleFunc("/", Dashboard)
 	http.HandleFunc("/node/add", AddNode)
 	http.HandleFunc("/node/delete", DeleteNode)

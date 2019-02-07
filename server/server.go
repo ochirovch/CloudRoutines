@@ -80,8 +80,8 @@ const (
 	GoogleComputeEngine = "GoogleComputeEngine"
 	DigitalOcean        = "DigitalOcean"
 	//not safe without secure connection
-	SourceCodePayload = "payloads/SourceCode"
-	BinaryPayload     = "payloads/BinaryCode"
+	SourceCodePayload = "html/payloads/SourceCode"
+	BinaryPayload     = "html/payloads/BinaryCode"
 )
 
 func (v *VPSGoogleComputeEngine) Launch(VPSsettings) (instances []Instance) {
