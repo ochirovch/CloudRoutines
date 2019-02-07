@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -15,9 +17,10 @@ import (
 )
 
 type Keeper struct {
-	Name   string
-	Tokens map[string]string
-	VPS    []VPS
+	Name     string
+	Tokens   map[string]string
+	IPserver string
+	VPS      []VPS
 }
 
 type VPS interface {
@@ -54,8 +57,9 @@ type VPSDigitalOcean struct {
 	Droplets []godo.Droplet
 }
 type configuration struct {
-	Name   string `json:"Name"`
-	Tokens []struct {
+	Name     string `json:"Name"`
+	IPserver string `json:"IPserver"`
+	Tokens   []struct {
 		Cloud string `json:"Cloud"`
 		Token string `json:"Token"`
 	} `json:"Tokens"`
@@ -76,8 +80,8 @@ const (
 	GoogleComputeEngine = "GoogleComputeEngine"
 	DigitalOcean        = "DigitalOcean"
 	//not safe without secure connection
-	SourceCodePayload = "/payloads/SourceCode"
-	BinaryPayload     = "/payloads/Binary"
+	SourceCodePayload = "payloads/SourceCode"
+	BinaryPayload     = "payloads/BinaryCode"
 )
 
 func (v *VPSGoogleComputeEngine) Launch(VPSsettings) (instances []Instance) {
@@ -221,16 +225,42 @@ func LoadKeeper(path string) (k Keeper, err error) {
 	k.VPS = append(k.VPS, &VPSDigitalOcean{Name: DigitalOcean})
 	k.VPS = append(k.VPS, &VPSGoogleComputeEngine{Name: GoogleComputeEngine})
 
+	k.IPserver = configuration.IPserver
 	k.Tokens = make(map[string]string)
 	for _, conf := range configuration.Tokens {
 		log.Println(conf.Cloud)
 		k.Tokens[conf.Cloud] = conf.Token
 	}
-	k.loadVPSes()
+	k.loadIPserver()
+	k.LoadVPSes()
 	return k, nil
 }
 
-func (k *Keeper) loadVPSes() {
+func (k *Keeper) loadIPserver() {
+	if k.IPserver != "" {
+		return
+	}
+	for _, vps := range k.VPS {
+		log.Printf("%+v\n", vps)
+
+		switch x := vps.(type) {
+		case *VPSDigitalOcean:
+			resp, err := http.Get("http://169.254.169.254/metadata/v1/interfaces/private/0/ipv4/address")
+			if err != nil {
+				// handle error
+			}
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			k.IPserver = string(body)
+		case *VPSGoogleComputeEngine:
+		default:
+			fmt.Printf("Unsupported type: %T\n", x)
+		}
+	}
+
+}
+
+func (k *Keeper) LoadVPSes() {
 	tokenSource := &TokenSource{
 		AccessToken: k.Tokens[DigitalOcean],
 	}
@@ -254,7 +284,6 @@ func (k *Keeper) loadVPSes() {
 		default:
 			fmt.Printf("Unsupported type: %T\n", x)
 		}
-
 	}
 
 }

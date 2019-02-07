@@ -20,4 +20,6 @@ visit http:/localhost:8099/
 
 - [ ] add payload handler
 
+- [ ] add projects
+
 - [ ] add processing results handler

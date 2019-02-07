@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/digitalocean/godo"
 	"github.com/ochirovch/CollyRoutines/server"
@@ -41,8 +43,15 @@ func Dashboard(w http.ResponseWriter, r *http.Request) {
 
 func AddNode(w http.ResponseWriter, r *http.Request) {
 
+	BinaryPayloadText, err := ioutil.ReadFile(server.BinaryPayload)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	payload := fmt.Sprintf(string(BinaryPayloadText), Keeper.IPserver, Keeper.Name, Keeper.Name, Keeper.Name)
+
 	instances := Keeper.Launch(
-		server.VPSsettings{ProjectName: "colly", Cloud: server.DigitalOcean, Payload: server.BinaryPayload},
+		server.VPSsettings{ProjectName: Keeper.Name, Cloud: server.DigitalOcean, Payload: payload},
 	)
 	jsonInstances, err := json.Marshal(instances)
 	if err != nil {
@@ -62,11 +71,21 @@ func Download(w http.ResponseWriter, r *http.Request) {
 }
 
 func SourceCodePayload(w http.ResponseWriter, r *http.Request) {
+	t := template.New("SourceCode")                    // Create a template.
+	t, err := t.ParseFiles("html/payloads/SourceCode") // Parse template file.
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = t.Execute(w, Keeper.IPserver) // merge.
+	if err != nil {
+		log.Println(err)
+	}
 
 }
 
 func BinaryCodePayload(w http.ResponseWriter, r *http.Request) {
-
+	http.ServeFile(w, r, "html/payloads/binary/file")
 }
 
 //ChannelReceive - get results from vm
@@ -81,6 +100,14 @@ func ChannelSend(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func refreshdata(k server.Keeper) {
+
+	c := time.Tick(5 * time.Minute)
+	for range c {
+		k.LoadVPSes()
+	}
+}
+
 func main() {
 	var err error
 	Keeper, err = server.LoadKeeper("settings.json")
@@ -88,6 +115,7 @@ func main() {
 		log.Println(err.Error())
 		return
 	}
+	go refreshdata(Keeper)
 	http.HandleFunc("/", Dashboard)
 	http.HandleFunc("/node/add", AddNode)
 	http.HandleFunc("/node/delete", DeleteNode)

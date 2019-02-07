@@ -1,9 +1,7 @@
 package client
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -30,19 +28,6 @@ func GetListURLs(address string) (bucket Bucket, err error) {
 	return bucket, nil
 }
 
-func SendListURLs(ListURLs []string, url string) {
-	jList, err := json.Marshal(ListURLs)
-	if err != nil {
-		return
-	}
-	req, err := http.NewRequest("POST", url, bytes.NewReader(jList))
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
+func SendResults() {
 
-	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
 }

