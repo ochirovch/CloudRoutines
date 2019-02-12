@@ -1,12 +1,12 @@
 # CloudRoutines
-CloudRoutines runs multiple vps and executes a colly application on each one which receive tasks on the server.
+CloudRoutines runs multiple vps and executes your application on each one.
 
 Your vps's as goroutines!
 
 ## Cloud support
 Firstly, it implements DigitalOcean droplets 5 usd/month
 
-Secondly, Google Compute Engine 2,5 usd/month (preemptible)
+Secondly, Google Compute Engine ~5 usd/month (preemptible)
 
 ## Quick launch
 rename _settings.json to settings.json and paste your DigitalOcean token

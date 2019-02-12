@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/digitalocean/godo"
-	"github.com/ochirovch/CollyRoutines/server"
+	"github.com/ochirovch/CloudRoutines/server"
 )
 
 var Keeper server.Keeper
@@ -98,7 +98,7 @@ func ChannelReceive(w http.ResponseWriter, r *http.Request) {
 //ChannelSend - send tasks
 // vm, bundle, status
 func ChannelSend(w http.ResponseWriter, r *http.Request) {
-
+	log.Println("!!!Uragsha!!!")
 }
 
 func refreshdata(k server.Keeper) {
@@ -117,16 +117,14 @@ func main() {
 		return
 	}
 	go refreshdata(Keeper)
-	//	http.Handle("/payload/binary", http.FileServer(http.Dir("html/payloads/binary")))
+	http.Handle("/payloads/", http.StripPrefix("/payloads/", http.FileServer(http.Dir("html/payloads/binary/"))))
 	http.HandleFunc("/", Dashboard)
 	http.HandleFunc("/node/add", AddNode)
-	http.HandleFunc("/node/delete", DeleteNode)
-	http.HandleFunc("/payload/sourcecode", SourceCodePayload)
+	//	http.HandleFunc("/node/delete", DeleteNode)
+	//	http.HandleFunc("/payload/sourcecode", SourceCodePayload)
 	http.HandleFunc("/payload/binarycode", BinaryCodePayload)
-	http.HandleFunc("/payload/download", Download)
-	http.HandleFunc("/channel/receive", ChannelReceive)
-	http.HandleFunc("/channel/send", ChannelSend)
+	http.HandleFunc("/channel/sendresult", ChannelReceive)
+	http.HandleFunc("/channel/gettask", ChannelSend)
 
 	http.ListenAndServe(":8099", nil)
-
 }

@@ -12,9 +12,9 @@ type Bucket struct {
 	Paths []string
 }
 
-// GetListURLs get list addresses and visit their
-func GetListURLs(address string) (bucket Bucket, err error) {
-	resp, err := http.Get(address + "/channel/send")
+// GetTask get list addresses and visit their
+func GetTask() (bucket <-chan Bucket, err error) {
+	resp, err := http.Get(":8099/channel/gettask")
 	if err != nil {
 		return bucket, err
 	}

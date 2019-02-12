@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ochirovch/CollyRoutines/client"
+	"github.com/ochirovch/CloudRoutines/client"
 )
 
 func main() {
 	for {
 
-		bucket, err := client.GetListURLs("127.0.0.1/channel/get")
+		bucket, err := client.GetTask()
 		if err != nil {
 			time.Sleep(30 * time.Second)
 		}
