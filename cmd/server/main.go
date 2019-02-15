@@ -73,7 +73,7 @@ func Download(w http.ResponseWriter, r *http.Request) {
 
 func SourceCodePayload(w http.ResponseWriter, r *http.Request) {
 	t := template.New("SourceCode")                    // Create a template.
-	t, err := t.ParseFiles("html/payloads/SourceCode") // Parse template file.
+	t, err := t.ParseFiles("html/payloads/sourcecode") // Parse template file.
 	if err != nil {
 		log.Println(err)
 	}
@@ -86,7 +86,7 @@ func SourceCodePayload(w http.ResponseWriter, r *http.Request) {
 }
 
 func BinaryCodePayload(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "html/payloads/binary/file")
+	http.ServeFile(w, r, "html/payloads/binary/")
 }
 
 //ChannelReceive - get results from vm
