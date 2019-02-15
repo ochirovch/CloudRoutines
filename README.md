@@ -3,6 +3,9 @@ cloudroutines runs multiple vps and executes your application on each one.
 
 Your vps's as goroutines!
 
+![Scheme](ochirovch.github.com/cloudroutines/img/scheme.jpg)
+
+
 ## Cloud support
 Firstly, it implements DigitalOcean droplets 5 usd/month
 
