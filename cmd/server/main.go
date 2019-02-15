@@ -98,10 +98,18 @@ func ChannelReceive(w http.ResponseWriter, r *http.Request) {
 //ChannelSend - send tasks
 // vm, bundle, status
 func ChannelSend(w http.ResponseWriter, r *http.Request) {
-	tasks := []server.Task
+	var tasks = []server.Task{}
+	var lastbundleTask = server.Task{}
+	var lastbundle int
+	// TODO: get last bucket
+	Keeper.DB.Order("bundle desc").First(&lastbundleTask)
+	lastbundle = lastbundleTask.Bundle
+	lastbundle++
+
 	Keeper.DB.Where("status = ?", server.NotProcessed).Find(&tasks)
+	fmt.Fprintln(w, lastbundle)
 	for _, task := range tasks {
-		fmt.Fprintln(w,task.Url)
+		fmt.Fprintln(w, task.Url)
 	}
 }
 

@@ -14,7 +14,7 @@ import (
 
 	"github.com/digitalocean/godo"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/oauth2"
 )
 
@@ -86,7 +86,7 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 
 type Task struct {
 	gorm.Model
-	Url string
+	Url    string
 	Bundle int
 	Status int
 }
@@ -102,7 +102,7 @@ const (
 //statuses for processing data
 const (
 	NotProcessed = iota
-	Sent 
+	Sent
 	Processed
 )
 
@@ -253,8 +253,7 @@ func LoadKeeper(path string) (k Keeper, err error) {
 		log.Println(conf.Cloud)
 		k.Tokens[conf.Cloud] = conf.Token
 	}
-	defer db.Close()
-	k.DB, err = gorm.Open("postgres", "host="+conf.DB.Name+" port=5432 user="+conf.DB.Username+" dbname=cloudroutines password="+conf.DB.Password+) +":"+conf.DB.Password+"@tcp("+conf.DB.Name+":5432)/cloudroutines")
+	k.DB, err = gorm.Open("postgres", "host="+conf.DB.Name+" port=5432 user="+conf.DB.Username+" dbname=cloudroutines password="+conf.DB.Password+":"+conf.DB.Password+"@tcp("+conf.DB.Name+":5432)/cloudroutines")
 	if err != nil {
 		log.Fatal(err)
 	}
