@@ -98,6 +98,16 @@ func ChannelReceive(w http.ResponseWriter, r *http.Request) {
 //ChannelSend - send tasks
 // vm, bundle, status
 func ChannelSend(w http.ResponseWriter, r *http.Request) {
+	tasks := []server.Task
+	Keeper.DB.Where("status = ?", server.NotProcessed).Find(&tasks)
+	for _, task := range tasks {
+		fmt.Fprintln(w,task.Url)
+	}
+}
+
+//ChannelReceiveTask - receive urls for handling
+// vm, bundle, status
+func ChannelReceiveTask(w http.ResponseWriter, r *http.Request) {
 	log.Println("!!!Uragsha!!!")
 }
 
@@ -120,11 +130,9 @@ func main() {
 	http.Handle("/payloads/", http.StripPrefix("/payloads/", http.FileServer(http.Dir("html/payloads/binary/"))))
 	http.HandleFunc("/", Dashboard)
 	http.HandleFunc("/node/add", AddNode)
-	//	http.HandleFunc("/node/delete", DeleteNode)
-	//	http.HandleFunc("/payload/sourcecode", SourceCodePayload)
-	http.HandleFunc("/payload/binarycode", BinaryCodePayload)
 	http.HandleFunc("/channel/sendresult", ChannelReceive)
 	http.HandleFunc("/channel/gettask", ChannelSend)
+	http.HandleFunc("/channel/addtask", ChannelReceiveTask)
 
 	http.ListenAndServe(":8099", nil)
 }

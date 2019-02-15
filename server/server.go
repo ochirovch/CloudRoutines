@@ -13,6 +13,8 @@ import (
 	"strings"
 
 	"github.com/digitalocean/godo"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"golang.org/x/oauth2"
 )
 
@@ -21,6 +23,7 @@ type Keeper struct {
 	Tokens   map[string]string
 	IPserver string
 	VPS      []VPS
+	DB       *gorm.DB
 }
 
 type VPS interface {
@@ -63,6 +66,11 @@ type configuration struct {
 		Cloud string `json:"Cloud"`
 		Token string `json:"Token"`
 	} `json:"Tokens"`
+	DB struct {
+		Name     string `json:"Name"`
+		Password string `json:"Password"`
+		Username string `json:"Username"`
+	} `json:"DB"`
 }
 
 type TokenSource struct {
@@ -76,12 +84,26 @@ func (t *TokenSource) Token() (*oauth2.Token, error) {
 	return token, nil
 }
 
+type Task struct {
+	gorm.Model
+	Url string
+	Bundle int
+	Status int
+}
+
 const (
 	GoogleComputeEngine = "GoogleComputeEngine"
 	DigitalOcean        = "DigitalOcean"
 	//not safe without secure connection
 	SourceCodePayload = "html/payloads/SourceCode"
 	BinaryPayload     = "html/payloads/BinaryCode"
+)
+
+//statuses for processing data
+const (
+	NotProcessed = iota
+	Sent 
+	Processed
 )
 
 func (v *VPSGoogleComputeEngine) Launch(VPSsettings) (instances []Instance) {
@@ -165,7 +187,7 @@ func (v *VPSDigitalOcean) Launch(setting VPSsettings) (instances []Instance) {
 			Slug: setting.Image,
 		},
 		IPv6: true,
-		Tags: []string{setting.ProjectName, "ClouRoutines"},
+		Tags: []string{setting.ProjectName, "CloudRoutines"},
 	}
 
 	droplets, _, err := client.Droplets.CreateMultiple(ctx, createRequest)
@@ -216,21 +238,28 @@ func LoadKeeper(path string) (k Keeper, err error) {
 	file, _ := os.Open(path)
 	defer file.Close()
 	decoder := json.NewDecoder(file)
-	configuration := configuration{}
-	err = decoder.Decode(&configuration)
+	conf := configuration{}
+	err = decoder.Decode(&conf)
 	if err != nil {
 		log.Println("error decoding json:", err)
 	}
-	k.Name = configuration.Name
+	k.Name = conf.Name
 	k.VPS = append(k.VPS, &VPSDigitalOcean{Name: DigitalOcean})
 	k.VPS = append(k.VPS, &VPSGoogleComputeEngine{Name: GoogleComputeEngine})
 
-	k.IPserver = configuration.IPserver
+	k.IPserver = conf.IPserver
 	k.Tokens = make(map[string]string)
-	for _, conf := range configuration.Tokens {
+	for _, conf := range conf.Tokens {
 		log.Println(conf.Cloud)
 		k.Tokens[conf.Cloud] = conf.Token
 	}
+	defer db.Close()
+	k.DB, err = gorm.Open("postgres", "host="+conf.DB.Name+" port=5432 user="+conf.DB.Username+" dbname=cloudroutines password="+conf.DB.Password+) +":"+conf.DB.Password+"@tcp("+conf.DB.Name+":5432)/cloudroutines")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer k.DB.Close()
+
 	k.loadIPserver()
 	k.LoadVPSes()
 	return k, nil
