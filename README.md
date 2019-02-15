@@ -3,7 +3,7 @@ cloudroutines runs multiple vps and executes your application on each one.
 
 Your vps's as goroutines!
 
-![Scheme](ochirovch.github.com/cloudroutines/img/scheme.jpg)
+![Scheme](/img/scheme.jpg)
 
 
 ## Cloud support
