@@ -1,5 +1,5 @@
-# CloudRoutines
-CloudRoutines runs multiple vps and executes your application on each one.
+# cloudroutines
+cloudroutines runs multiple vps and executes your application on each one.
 
 Your vps's as goroutines!
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ochirovch/CloudRoutines/client"
+	"github.com/ochirovch/cloudroutines/client"
 )
 
 func main() {

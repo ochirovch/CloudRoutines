@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/digitalocean/godo"
-	"github.com/ochirovch/CloudRoutines/server"
+	"github.com/ochirovch/cloudroutines/server"
 )
 
 var Keeper server.Keeper
