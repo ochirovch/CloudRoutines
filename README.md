@@ -1,7 +1,25 @@
 # cloudroutines
-cloudroutines runs multiple vps and executes your application on each one.
+cloudroutines launch multiple vps with one click and execute your parsing application on each one. 
 
-Your vps's as goroutines!
+Client application get tasks from your server, download pages, parse and send results to server.
+
+Your vps's works like goroutines.
+
+## What problem does it solve?
+
+Many sites limit parsing by ip address, using proxy servers to solve this problem. This application allows you to offer an alternative to using proxy servers.
+
+|               | Proxy servers | CloudRoutines|
+| ------------- | ------------- |------------- |
+| offer ip address  | V         | V            |
+| ------------- | ------------- |------------- |
+| can perform calculations | X  | V            |
+| ------------- | ------------- |------------- |
+| can buy by hour | X           | V            |
+| ------------- | ------------- |------------- |
+| can be the proxy server itself| X  | V       |
+| ------------- | ------------- |------------- |
+| can be private (not shared)| XV    | V       |
 
 ![Scheme](https://raw.githubusercontent.com/ochirovch/CloudRoutines/master/img/scheme.png)
 
@@ -13,6 +31,8 @@ Secondly, Google Compute Engine ~5 usd/month (preemptible)
 
 ## Quick launch
 rename _settings.json to settings.json and paste your DigitalOcean token
+
+cd $GOPATH/src/github.com/ochirovch/cloudroutines/cmd/server
 
 go run cmd/server/main.go
 
